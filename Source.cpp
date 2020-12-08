@@ -3,12 +3,11 @@
 #include <random>
 using namespace std;
 
-//Примечания: 
-//если не хватает размера, он вбрасывает исключение.
-template <class key, class value> //БЕЗЗНАКОВЫЕ ТИПЫ И БЕЗ СТРОК - НЕ ЗАБЫТЬ СДЕЛАТЬ СПЕЦИАЛИЗАЦИИ 
+//unsigned types doesn't work properly 
+template <class key, class value> 
 class HashMap
 {
-	//вложенный класс пар
+	//nested class pairs (like pair xd) 
 	template<class key, class value>
 	struct pairs 
 	{
@@ -25,12 +24,11 @@ class HashMap
 	pairs<key, value>* arr;
 	size_t Size = 0;
 
-	key KEY_MIN; //минимально значения типа или пустота если это строка
+	key KEY_MIN; 
 	value VALUE_MIN;
 
 	size_t mod = 0;
 	
-	//Хэш-функции
 	size_t HashFunction(const key& k) //O(log n).
 	{
 		string s;
@@ -46,7 +44,6 @@ class HashMap
 	}
 
 public:
-	//Конструктор
 	HashMap(const size_t& n)
 	{
 		Size = n, mod = n;
@@ -62,11 +59,11 @@ public:
 		for (size_t i = 0; i < n; i++)
 		{
 			arr[i].Key = KEY_MIN;
-			arr[i].Value = VALUE_MIN; //по идее это не нужно
+			arr[i].Value = VALUE_MIN;
 		}
 	}
 
-	void insert(const key& Key, const value& Value) //В среднем O(1), В худшем O(n)
+	void insert(const key& Key, const value& Value) //O(n)
 	{
 		size_t hash_index = HashFunction(Key), cycle_cnt = 0;
 		do 
@@ -85,7 +82,7 @@ public:
 			}
 		} while (cycle_cnt < 2);
 
-		//обработка ошибок. (не хватило места)
+		//Exception - size of map is too small
 		if(cycle_cnt == 2)
 			throw "SmallSize";
 	}
@@ -97,12 +94,12 @@ public:
 		arr[hash_index].Value = VALUE_MIN;
 	}
 
-	void reconstruct(size_t size) //стоит ли делать хз
+	void reconstruct(size_t size) 
 	{
 		
 	}
 
-	value& operator[](const key& i) //В среднем O(1), в худшем O(n) 
+	value& operator[](const key& i) //O(n) 
 	{
 		size_t hash_index = HashFunction(i), cycle_cnt = 0;
 		do
@@ -119,7 +116,7 @@ public:
 			}
 		} while (cycle_cnt < 2);
 
-		//обработка ошибок. (элемент не найден)
+		//Exception - element not found
 		throw "NotFound";
 	}
 
@@ -143,6 +140,6 @@ public:
 int main()
 {
 	HashMap<string, int> prices(10);
-	prices.insert("апельсины", 100);
-	cout << prices["апельсины"];
+	prices.insert("test", 100);
+	cout << prices["test"];
 }
